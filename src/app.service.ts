@@ -20,9 +20,9 @@ export class AppService {
     private userRepository: Repository<UserInterface>,
   ) {}
 
-  create(todo: UserInterface): Promise<UserInterface> { 
+  create(user: UserInterface): Promise<UserInterface> { 
     return this.userRepository.save(
-      this.userRepository.create(todo)
+      this.userRepository.create(user)
     );
   }
 

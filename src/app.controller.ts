@@ -8,30 +8,30 @@ export class AppController {
 
 
   @Post()
-  async create(@Body() createTodoDto: UserInterface) {
-    const user = await this.appService.create(createTodoDto);
+  async create(@Body() createUserDto: UserInterface) {
+    const user = await this.appService.create(createUserDto);
     if(!user) {
-      return 'error in creating User'
+      return {status:500,message:'Error Create User'}
     }
-    return 'User created successfully'
+    return {status:200,message:'Success Create User'}
   }
 
   @Get()
   async findAll(@Req() request: Request) {
     const user: Array<UserInterface> = await this.appService.findAll()
-    return user
+    return {status:200,data:user}
   }
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() body: any) {
     const update: any = await this.appService.update(id, body)
-    return "user updated";
+    return {status:200,message:'Success Update User'};
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
     await this.appService.delete(id)
-    return "user deleted"
+    return {status:200,message:'Success Delete User'}
   }
   @Cron( '0 * * * * *' )
   async cornJob()  {
@@ -47,12 +47,12 @@ export class AppController {
       const getHour = new Date().toLocaleString('en-US',{timeZone:val.timeZone,timeStyle: 'short', hour12: false}).split(':')[0]
       
       const status = val.status === null || val.status === 'error'
-      if(birthDay === day && month === birthMonth && status && getHour === '02'){
+      if(birthDay === day && month === birthMonth && status && getHour === '09'){
         console.log("send email",val.firstName)
         const isSuccess = this.appService.sendEmail(val.email,val.message)
         this.appService.update(val.id?.toString(),{...val,status:isSuccess ? 'send':'error'})
       }
-      if(val.status === 'send' && getHour !== '02'){
+      if(val.status === 'send' && getHour !== '09'){
         this.appService.update(val.id?.toString(),{...val,status:null})
 
       }
